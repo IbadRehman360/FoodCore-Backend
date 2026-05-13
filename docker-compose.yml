@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   api:
     build:
@@ -33,11 +31,24 @@ services:
     networks:
       - foodcure-network
 
+  mongo:
+    image: mongo:7-jammy
+    container_name: foodcure-mongo
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - '27017:27017'
+    networks:
+      - foodcure-network
+
   redis:
     image: redis:7-alpine
     container_name: foodcure-redis
     restart: unless-stopped
-    command: redis-server --requirepass ${REDIS_PASSWORD:-}
+    command: sh -c "[ -n \"$$REDIS_PASSWORD\" ] && redis-server --requirepass $$REDIS_PASSWORD || redis-server"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
     volumes:
       - redis_data:/data
     ports:
@@ -47,6 +58,7 @@ services:
 
 volumes:
   postgres_data:
+  mongo_data:
   redis_data:
 
 networks:
