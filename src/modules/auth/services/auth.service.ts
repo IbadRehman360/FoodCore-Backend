@@ -10,6 +10,7 @@ import { UsersService } from '@modules/users/services/users.service';
 import { MailService } from '@modules/mail/mail.service';
 import { OtpService } from '@modules/otp/otp.service';
 import { RegisterDto } from '../dto/register.dto';
+import { CaptchaService } from './captcha.service';
 import { LoginDto } from '../dto/login.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { VerifyOtpDto } from '../dto/verify-otp.dto';
@@ -25,9 +26,12 @@ export class AuthService {
     private readonly config: ConfigService,
     private readonly mailService: MailService,
     private readonly otpService: OtpService,
+    private readonly captchaService: CaptchaService,
   ) {}
 
   async register(dto: RegisterDto) {
+    await this.captchaService.verify(dto.captchaToken);
+
     if (dto.password !== dto.confirmPassword) {
       throw new BadRequestException('Passwords do not match.');
     }

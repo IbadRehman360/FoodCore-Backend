@@ -36,4 +36,9 @@ export class RegisterDto {
   @IsString()
   @MaxLength(20)
   referralCode?: string;
+
+  @ApiPropertyOptional({ description: 'Google reCAPTCHA v3 token (required when CAPTCHA_ENABLED=true)' })
+  @IsOptional()
+  @IsString()
+  captchaToken?: string;
 }

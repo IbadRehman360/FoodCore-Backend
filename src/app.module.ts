@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
@@ -29,6 +30,9 @@ import { WearablesModule } from '@modules/wearables/wearables.module';
 import { ReviewsModule } from '@modules/reviews/reviews.module';
 
 @Module({
+  providers: [
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+  ],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,

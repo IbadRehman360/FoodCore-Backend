@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../services/auth.service';
 import { RegisterDto } from '../dto/register.dto';
@@ -18,6 +19,7 @@ export class AuthController {
 
   @Public()
   @Post('register')
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @ApiOperation({ summary: 'Register a new user — screen 5 (Sign Up)' })
   @ApiResponse({ status: 201, description: 'User created; OTP sent to email' })
   @ApiResponse({ status: 409, description: 'Email already registered' })
@@ -27,6 +29,7 @@ export class AuthController {
 
   @Public()
   @Post('verify-otp')
+  @Throttle({ default: { ttl: 60000, limit: 10 } })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verify 6-digit OTP sent to email — screen 4' })
   @ApiResponse({ status: 200, description: 'OTP valid; returns tokens + nextStep: "setup-profile"' })
@@ -37,6 +40,7 @@ export class AuthController {
 
   @Public()
   @Post('resend-otp')
+  @Throttle({ default: { ttl: 60000, limit: 3 } })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Resend OTP — 60s cooldown enforced — screen 4 timer' })
   @ApiResponse({ status: 200, description: 'OTP resent' })
@@ -47,6 +51,7 @@ export class AuthController {
 
   @Public()
   @Post('login')
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login with email and password — screen 2' })
   @ApiResponse({ status: 200, description: 'Returns access token, refresh token, and user' })
@@ -57,6 +62,7 @@ export class AuthController {
 
   @Public()
   @Post('refresh')
+  @SkipThrottle()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Exchange refresh token for new access token' })
   @ApiResponse({ status: 200, description: 'Returns new access + refresh tokens' })
@@ -67,6 +73,7 @@ export class AuthController {
 
   @Public()
   @Post('forgot-password')
+  @Throttle({ default: { ttl: 60000, limit: 3 } })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Request password reset OTP — screen 3 (Forgot Password)' })
   @ApiResponse({ status: 200, description: 'OTP sent to email (even if account not found — security)' })
@@ -76,6 +83,7 @@ export class AuthController {
 
   @Public()
   @Post('reset-password')
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Reset password with OTP — screens 3→4' })
   @ApiResponse({ status: 200, description: 'Password updated successfully' })
