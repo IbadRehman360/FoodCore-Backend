@@ -1,29 +1,49 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { WaterLog } from '../entities/water-log.entity';
+import { WaterReminder } from '../entities/water-reminder.entity';
 
 @Injectable()
 export class WaterTrackerRepository {
-  constructor(@InjectRepository(WaterLog) private readonly repo: Repository<WaterLog>) {}
+  constructor(
+    @InjectRepository(WaterLog) private readonly logRepo: Repository<WaterLog>,
+    @InjectRepository(WaterReminder) private readonly reminderRepo: Repository<WaterReminder>,
+  ) {}
 
-  findById(id: string) {
-    return this.repo.findOne({ where: { id } });
+  // ─── Logs ────────────────────────────────────────────────────────────────
+  findLogById(id: string) {
+    return this.logRepo.findOne({ where: { id } });
   }
 
-  findByUserIdAndDate(userId: string, date: string) {
-    return this.repo.find({ where: { userId, date: new Date(date) } });
+  findLogsByDate(userId: string, date: string) {
+    return this.logRepo.find({
+      where: { userId, date: new Date(date) },
+      order: { createdAt: 'ASC' },
+    });
   }
 
-  findByUserId(userId: string, skip: number, take: number) {
-    return this.repo.findAndCount({ where: { userId }, skip, take, order: { date: 'DESC' } });
+  findLogsRange(userId: string, from: Date, to: Date) {
+    return this.logRepo.find({
+      where: { userId, date: Between(from, to) },
+      order: { date: 'ASC', createdAt: 'ASC' },
+    });
   }
 
-  create(data: Partial<WaterLog>) {
-    return this.repo.save(this.repo.create(data));
+  createLog(data: Partial<WaterLog>) {
+    return this.logRepo.save(this.logRepo.create(data));
   }
 
-  delete(id: string) {
-    return this.repo.softDelete(id);
+  deleteLog(userId: string, id: string) {
+    return this.logRepo.softDelete({ id, userId });
+  }
+
+  // ─── Reminders ───────────────────────────────────────────────────────────
+  findReminder(userId: string) {
+    return this.reminderRepo.findOne({ where: { userId } });
+  }
+
+  upsertReminder(data: Partial<WaterReminder>) {
+    return this.reminderRepo.upsert(this.reminderRepo.create(data), ['userId']);
   }
 }

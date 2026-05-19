@@ -1,11 +1,12 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AiService } from '../services/ai.service';
 import { FoodRecognitionDto } from '../dto/food-recognition.dto';
 import { ChatbotDto } from '../dto/chatbot.dto';
 import { BarcodeScanDto } from '../dto/barcode-scan.dto';
 import { CurrentUser } from '@common/decorators';
 
+@ApiExcludeController()
 @ApiTags('AI')
 @ApiBearerAuth()
 @Controller('ai')

@@ -1,9 +1,10 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CopyrightService } from '../services/copyright.service';
 import { AcceptCopyrightDto } from '../dto/accept-copyright.dto';
 import { CurrentUser } from '@common/decorators';
 
+@ApiExcludeController()
 @ApiTags('Copyright')
 @ApiBearerAuth()
 @Controller('copyright')

@@ -1,10 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RecipesService } from '../services/recipes.service';
 import { CreateRecipeDto } from '../dto/create-recipe.dto';
 import { CurrentUser } from '@common/decorators';
 import { PaginationDto } from '@common/dto';
 
+@ApiExcludeController()
 @ApiTags('Recipes')
 @ApiBearerAuth()
 @Controller('recipes')

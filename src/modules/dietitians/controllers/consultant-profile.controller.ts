@@ -1,11 +1,10 @@
 import {
-  Body, Controller, Get, HttpCode, HttpStatus, Patch, Post,
+  Body, Controller, Get, HttpCode, HttpStatus, Inject, Patch, Post,
   UploadedFile, UploadedFiles, UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
 import { DietitiansService } from '../services/dietitians.service';
 import { UsersService } from '@modules/users/services/users.service';
 import { UpdateDietitianDto } from '../dto/update-dietitian.dto';
@@ -15,16 +14,7 @@ import { SetupAvailabilityDto } from '../dto/setup-availability.dto';
 import { ChangePasswordDto } from '@modules/users/dto/change-password.dto';
 import { CurrentUser, Roles } from '@common/decorators';
 import { Role } from '@common/enums';
-
-const photoStorage = diskStorage({
-  destination: './uploads/photos',
-  filename: (_, file, cb) => cb(null, `${Date.now()}${extname(file.originalname)}`),
-});
-
-const certificateStorage = diskStorage({
-  destination: './uploads/certificates',
-  filename: (_, file, cb) => cb(null, `${Date.now()}${extname(file.originalname)}`),
-});
+import { STORAGE_SERVICE, IStorageService } from '@modules/storage/storage.interface';
 
 @ApiTags('Consultant Profile')
 @ApiBearerAuth()
@@ -34,6 +24,7 @@ export class ConsultantProfileController {
   constructor(
     private readonly dietitiansService: DietitiansService,
     private readonly usersService: UsersService,
+    @Inject(STORAGE_SERVICE) private readonly storage: IStorageService,
   ) {}
 
   @Get('me')
@@ -66,13 +57,13 @@ export class ConsultantProfileController {
 
   @Post('me/certificates')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(FilesInterceptor('files', 10, { storage: certificateStorage }))
+  @UseInterceptors(FilesInterceptor('files', 10, { storage: memoryStorage() }))
   @ApiConsumes('multipart/form-data')
   @ApiBody({ schema: { type: 'object', properties: { files: { type: 'array', items: { type: 'string', format: 'binary' } } } } })
   @ApiOperation({ summary: 'Upload certification documents — max 10 files (images/PDF)' })
   @ApiResponse({ status: 200, description: 'Certificates uploaded' })
-  uploadCertificates(@CurrentUser('id') userId: string, @UploadedFiles() files: Express.Multer.File[]) {
-    const urls = files.map(f => `/uploads/certificates/${f.filename}`);
+  async uploadCertificates(@CurrentUser('id') userId: string, @UploadedFiles() files: Express.Multer.File[]) {
+    const urls = await Promise.all(files.map(f => this.storage.saveCertificate(f)));
     return this.dietitiansService.addCertificates(userId, urls);
   }
 
@@ -94,12 +85,13 @@ export class ConsultantProfileController {
 
   @Post('me/photo')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(FileInterceptor('photo', { storage: photoStorage }))
+  @UseInterceptors(FileInterceptor('photo', { storage: memoryStorage() }))
   @ApiConsumes('multipart/form-data')
   @ApiBody({ schema: { type: 'object', properties: { photo: { type: 'string', format: 'binary' } } } })
   @ApiOperation({ summary: 'Upload profile photo' })
   @ApiResponse({ status: 200, description: 'Profile photo updated' })
-  uploadPhoto(@CurrentUser('id') userId: string, @UploadedFile() file: Express.Multer.File) {
-    return this.usersService.updateProfilePhoto(userId, `/uploads/photos/${file.filename}`);
+  async uploadPhoto(@CurrentUser('id') userId: string, @UploadedFile() file: Express.Multer.File) {
+    const url = await this.storage.savePhoto(file);
+    return this.usersService.updateProfilePhoto(userId, url);
   }
 }

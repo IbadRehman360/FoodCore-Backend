@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SubscriptionsService } from '../services/subscriptions.service';
 import { UpgradeSubscriptionDto } from '../dto/upgrade-subscription.dto';
 import { CurrentUser } from '@common/decorators';
 
+@ApiExcludeController()
 @ApiTags('Subscriptions')
 @ApiBearerAuth()
 @Controller('subscriptions')

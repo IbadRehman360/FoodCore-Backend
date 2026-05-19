@@ -1,27 +1,25 @@
 import {
-  Body, Controller, Get, HttpCode, HttpStatus, Patch, Post,
+  Body, Controller, Get, HttpCode, HttpStatus, Inject, Patch, Post,
   UploadedFile, UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
 import { UsersService } from '../services/users.service';
 import { SetupProfileDto } from '../dto/setup-profile.dto';
 import { HealthProfileDto } from '../dto/health-profile.dto';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 import { CurrentUser } from '@common/decorators';
-
-const photoStorage = diskStorage({
-  destination: './uploads/photos',
-  filename: (_, file, cb) => cb(null, `${Date.now()}${extname(file.originalname)}`),
-});
+import { STORAGE_SERVICE, IStorageService } from '@modules/storage/storage.interface';
 
 @ApiTags('User Profile')
 @ApiBearerAuth()
 @Controller('users')
 export class UserProfileController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    @Inject(STORAGE_SERVICE) private readonly storage: IStorageService,
+  ) {}
 
   @Get('me')
   @ApiOperation({ summary: 'Get my profile' })
@@ -62,12 +60,13 @@ export class UserProfileController {
 
   @Post('me/photo')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(FileInterceptor('photo', { storage: photoStorage }))
+  @UseInterceptors(FileInterceptor('photo', { storage: memoryStorage() }))
   @ApiConsumes('multipart/form-data')
   @ApiBody({ schema: { type: 'object', properties: { photo: { type: 'string', format: 'binary' } } } })
   @ApiOperation({ summary: 'Upload profile photo' })
   @ApiResponse({ status: 200, description: 'Profile photo updated' })
-  uploadPhoto(@CurrentUser('id') userId: string, @UploadedFile() file: Express.Multer.File) {
-    return this.usersService.updateProfilePhoto(userId, `/uploads/photos/${file.filename}`);
+  async uploadPhoto(@CurrentUser('id') userId: string, @UploadedFile() file: Express.Multer.File) {
+    const url = await this.storage.savePhoto(file);
+    return this.usersService.updateProfilePhoto(userId, url);
   }
 }

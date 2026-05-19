@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SocialService } from '../services/social.service';
 import { CreateSocialLinkDto } from '../dto/create-social-link.dto';
 import { CurrentUser } from '@common/decorators';
 
+@ApiExcludeController()
 @ApiTags('Social')
 @ApiBearerAuth()
 @Controller('social')

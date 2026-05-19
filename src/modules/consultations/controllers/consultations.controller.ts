@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ConsultationsService } from '../services/consultations.service';
 import { CreateConsultationDto } from '../dto/create-consultation.dto';
 import { CurrentUser, Roles } from '@common/decorators';
 import { Role } from '@common/enums';
 import { PaginationDto } from '@common/dto';
 
+@ApiExcludeController()
 @ApiTags('Consultations')
 @ApiBearerAuth()
 @Controller('consultations')

@@ -1,11 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ReviewsService } from '../services/reviews.service';
 import { CreateReviewDto } from '../dto/create-review.dto';
 import { ReviewTargetType } from '../entities/review.entity';
 import { CurrentUser } from '@common/decorators';
 import { PaginationDto } from '@common/dto';
 
+@ApiExcludeController()
 @ApiTags('Reviews')
 @ApiBearerAuth()
 @Controller('reviews')

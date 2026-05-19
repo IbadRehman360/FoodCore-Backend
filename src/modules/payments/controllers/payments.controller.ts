@@ -1,10 +1,11 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PaymentsService } from '../services/payments.service';
 import { CreateCheckoutDto } from '../dto/create-checkout.dto';
 import { CurrentUser, Public } from '@common/decorators';
 import { PaginationDto } from '@common/dto';
 
+@ApiExcludeController()
 @ApiTags('Payments')
 @ApiBearerAuth()
 @Controller('payments')

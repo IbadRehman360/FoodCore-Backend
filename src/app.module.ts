@@ -17,6 +17,7 @@ import { DietitiansModule } from '@modules/dietitians/dietitians.module';
 import { AdminModule } from '@modules/admin/admin.module';
 import { MealPlansModule } from '@modules/meal-plans/meal-plans.module';
 import { FoodDiaryModule } from '@modules/food-diary/food-diary.module';
+import { FoodsModule } from '@modules/foods/foods.module';
 import { WaterTrackerModule } from '@modules/water-tracker/water-tracker.module';
 import { RecipesModule } from '@modules/recipes/recipes.module';
 import { ConsultationsModule } from '@modules/consultations/consultations.module';
@@ -74,6 +75,7 @@ import { ReviewsModule } from '@modules/reviews/reviews.module';
     AdminModule,
     MealPlansModule,
     FoodDiaryModule,
+    FoodsModule,
     WaterTrackerModule,
     RecipesModule,
     ConsultationsModule,

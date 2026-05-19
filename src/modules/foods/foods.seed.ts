@@ -1,0 +1,41 @@
+import { Food } from './entities/food.entity';
+
+export const FOOD_SEED: Partial<Food>[] = [
+  { name: 'Oatmeal', servingUnit: 'cup', servingSize: 1, calories: 158, fat: 3, saturatedFat: 0.5, protein: 6, carbs: 27, fiber: 4, sugar: 1, sodium: 9, iron: 2, magnesium: 60 },
+  { name: 'Banana', servingUnit: 'medium', servingSize: 1, calories: 105, fat: 0.4, protein: 1.3, carbs: 27, fiber: 3, sugar: 14, potassium: 422, vitB6: 0.4, vitC: 10 },
+  { name: 'Apple', servingUnit: 'medium', servingSize: 1, calories: 95, fat: 0.3, protein: 0.5, carbs: 25, fiber: 4, sugar: 19, vitC: 8, potassium: 195 },
+  { name: 'Greek Yogurt (Plain)', servingUnit: 'cup', servingSize: 1, calories: 100, fat: 0.7, protein: 17, carbs: 6, sugar: 6, calcium: 200, vitB12: 1.3 },
+  { name: 'Scrambled Eggs', servingUnit: 'egg', servingSize: 2, calories: 182, fat: 13, saturatedFat: 4, protein: 12, carbs: 2, cholesterol: 370, vitD: 2, vitB12: 1.2 },
+  { name: 'Whole Wheat Toast', servingUnit: 'slice', servingSize: 2, calories: 138, fat: 2, protein: 8, carbs: 24, fiber: 4, sodium: 280 },
+  { name: 'Peanut Butter', servingUnit: 'tbsp', servingSize: 2, calories: 188, fat: 16, saturatedFat: 3, protein: 8, carbs: 6, fiber: 2, sugar: 3, sodium: 152, vitE: 3 },
+  { name: 'Avocado', servingUnit: 'half', servingSize: 1, calories: 120, fat: 11, saturatedFat: 1.5, protein: 1.5, carbs: 6, fiber: 5, potassium: 345, vitK: 14 },
+
+  { name: 'Grilled Chicken Breast', servingUnit: 'oz', servingSize: 4, calories: 187, fat: 4, protein: 35, carbs: 0, cholesterol: 96, sodium: 84, vitB3: 13, vitB6: 0.8 },
+  { name: 'Salmon (Baked)', servingUnit: 'oz', servingSize: 4, calories: 233, fat: 14, saturatedFat: 3, protein: 25, vitD: 14, vitB12: 4, potassium: 384 },
+  { name: 'Brown Rice (Cooked)', servingUnit: 'cup', servingSize: 1, calories: 215, fat: 1.8, protein: 5, carbs: 45, fiber: 3.5, magnesium: 84, vitB3: 3 },
+  { name: 'Quinoa (Cooked)', servingUnit: 'cup', servingSize: 1, calories: 222, fat: 4, protein: 8, carbs: 39, fiber: 5, iron: 2.8, magnesium: 118 },
+  { name: 'Sweet Potato (Baked)', servingUnit: 'medium', servingSize: 1, calories: 103, fat: 0.2, protein: 2.3, carbs: 24, fiber: 3.8, vitA: 1096, vitC: 22, potassium: 542 },
+  { name: 'Mixed Salad', servingUnit: 'bowl', servingSize: 1, calories: 35, fat: 0.4, protein: 2, carbs: 7, fiber: 3, vitA: 360, vitC: 18, vitK: 110 },
+  { name: 'Whole Wheat Pasta', servingUnit: 'cup', servingSize: 1, calories: 174, fat: 0.8, protein: 7, carbs: 37, fiber: 6, iron: 1.5, magnesium: 42 },
+  { name: 'Tofu (Firm)', servingUnit: 'oz', servingSize: 3, calories: 70, fat: 4, protein: 8, carbs: 1.5, calcium: 250, iron: 1.4 },
+  { name: 'Lentils (Cooked)', servingUnit: 'cup', servingSize: 1, calories: 230, fat: 0.8, protein: 18, carbs: 40, fiber: 15.6, iron: 6.6, potassium: 731 },
+  { name: 'Black Beans', servingUnit: 'cup', servingSize: 1, calories: 227, fat: 0.9, protein: 15, carbs: 41, fiber: 15, iron: 3.6, magnesium: 120 },
+
+  { name: 'Beef Burger (Patty)', servingUnit: 'patty', servingSize: 1, calories: 254, fat: 17, saturatedFat: 7, protein: 23, cholesterol: 88, sodium: 71, iron: 2.6, zinc: 6 },
+  { name: 'Pepperoni Pizza Slice', servingUnit: 'slice', servingSize: 1, calories: 298, fat: 12, saturatedFat: 5, protein: 13, carbs: 34, fiber: 2, sodium: 683, calcium: 188 },
+  { name: 'Caesar Salad', servingUnit: 'bowl', servingSize: 1, calories: 470, fat: 40, saturatedFat: 8, protein: 11, carbs: 18, fiber: 3, sodium: 1070, vitA: 410 },
+  { name: 'Chicken Curry', servingUnit: 'cup', servingSize: 1, calories: 384, fat: 23, saturatedFat: 9, protein: 28, carbs: 13, fiber: 2, sodium: 770, vitA: 200 },
+  { name: 'Beef Stir Fry', servingUnit: 'cup', servingSize: 1, calories: 312, fat: 16, saturatedFat: 4, protein: 26, carbs: 16, fiber: 3, sodium: 920, zinc: 5 },
+  { name: 'Vegetable Soup', servingUnit: 'cup', servingSize: 1, calories: 95, fat: 2, protein: 4, carbs: 17, fiber: 4, sodium: 580, vitA: 350, vitC: 12 },
+
+  { name: 'Almonds', servingUnit: 'oz', servingSize: 1, calories: 164, fat: 14, saturatedFat: 1, protein: 6, carbs: 6, fiber: 3.5, vitE: 7.3, magnesium: 76 },
+  { name: 'Dark Chocolate', servingUnit: 'oz', servingSize: 1, calories: 170, fat: 12, saturatedFat: 7, protein: 2, carbs: 13, fiber: 3, sugar: 7, iron: 3.4, magnesium: 64 },
+  { name: 'Hummus', servingUnit: 'tbsp', servingSize: 2, calories: 70, fat: 5, protein: 2, carbs: 5, fiber: 1.5, sodium: 130 },
+  { name: 'Carrot Sticks', servingUnit: 'cup', servingSize: 1, calories: 50, fat: 0.3, protein: 1.2, carbs: 12, fiber: 3.5, vitA: 1690, vitK: 16 },
+  { name: 'Cheese (Cheddar)', servingUnit: 'oz', servingSize: 1, calories: 115, fat: 9.4, saturatedFat: 6, protein: 7, carbs: 0.4, cholesterol: 30, calcium: 202, sodium: 180 },
+  { name: 'Granola Bar', servingUnit: 'bar', servingSize: 1, calories: 190, fat: 7, saturatedFat: 2, protein: 4, carbs: 29, fiber: 3, sugar: 11, addedSugar: 9, sodium: 90 },
+  { name: 'Protein Shake', servingUnit: 'scoop', servingSize: 1, calories: 120, fat: 1.5, protein: 24, carbs: 3, sugar: 1, calcium: 130, iron: 1 },
+  { name: 'Orange', servingUnit: 'medium', servingSize: 1, calories: 62, fat: 0.2, protein: 1.2, carbs: 15, fiber: 3, sugar: 12, vitC: 70, calcium: 52 },
+  { name: 'Strawberries', servingUnit: 'cup', servingSize: 1, calories: 49, fat: 0.5, protein: 1, carbs: 12, fiber: 3, sugar: 7, vitC: 89, potassium: 233 },
+  { name: 'Blueberries', servingUnit: 'cup', servingSize: 1, calories: 84, fat: 0.5, protein: 1.1, carbs: 21, fiber: 3.6, sugar: 15, vitC: 14, vitK: 29 },
+];

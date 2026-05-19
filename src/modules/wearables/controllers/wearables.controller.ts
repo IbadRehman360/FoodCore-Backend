@@ -1,9 +1,10 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { WearablesService } from '../services/wearables.service';
 import { ConnectWearableDto } from '../dto/connect-wearable.dto';
 import { CurrentUser } from '@common/decorators';
 
+@ApiExcludeController()
 @ApiTags('Wearables')
 @ApiBearerAuth()
 @Controller('wearables')

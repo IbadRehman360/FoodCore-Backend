@@ -1,9 +1,10 @@
 import { Controller, Get, HttpCode, HttpStatus, Param, Patch, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { NotificationsService } from '../services/notifications.service';
 import { CurrentUser } from '@common/decorators';
 import { PaginationDto } from '@common/dto';
 
+@ApiExcludeController()
 @ApiTags('Notifications')
 @ApiBearerAuth()
 @Controller('notifications')

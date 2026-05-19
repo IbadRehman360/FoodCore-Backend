@@ -59,6 +59,15 @@ export class SetupProfessionalProfileDto {
   @IsString({ each: true })
   services?: string[];
 
+  @ApiPropertyOptional({
+    type: [String],
+    example: ['Weight Management', 'Diabetes Care'],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  specialties?: string[];
+
   @ApiPropertyOptional({ example: 'I am a certified nutritionist with 10 years of experience...' })
   @IsOptional()
   @IsString()

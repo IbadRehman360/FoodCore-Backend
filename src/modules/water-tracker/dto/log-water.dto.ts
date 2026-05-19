@@ -1,8 +1,16 @@
-import { IsDateString, IsInt, IsOptional, Min } from 'class-validator';
+import { IsDateString, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class LogWaterDto {
-  @ApiProperty({ description: 'Amount in ml' }) @IsInt() @Min(1) amount: number;
-  @ApiProperty() @IsDateString() date: string;
-  @ApiPropertyOptional({ description: 'Daily goal in ml' }) @IsOptional() @IsInt() @Min(500) goal?: number;
+  @ApiProperty({ example: 250, description: 'Amount in ml' })
+  @IsInt() @Min(1)
+  amount: number;
+
+  @ApiProperty({ example: '2026-05-19' })
+  @IsDateString()
+  date: string;
+
+  @ApiPropertyOptional({ example: 'cup' })
+  @IsOptional() @IsString()
+  source?: string;
 }

@@ -106,6 +106,11 @@ export class UsersService {
     return { message: 'Password changed successfully' };
   }
 
+  async setWaterGoal(id: string, goal: number) {
+    await this.usersRepo.update(id, { waterGoal: goal });
+    return this.usersRepo.findById(id);
+  }
+
   async updateProfilePhoto(id: string, photoUrl: string) {
     await this.usersRepo.update(id, { profilePhoto: photoUrl });
     return this.usersRepo.findById(id);

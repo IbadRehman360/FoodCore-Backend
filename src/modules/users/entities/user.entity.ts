@@ -46,6 +46,8 @@ export class User extends BaseEntity {
   @Column({ type: 'text', array: true, nullable: true, default: [] }) symptoms: string[];
   @Column({ type: 'text', array: true, nullable: true, default: [] }) foodAllergies: string[];
   @Column({ nullable: true }) mealPersonalization: string;
+  @Column({ type: 'int', default: 2000 }) calorieGoal: number;
+  @Column({ type: 'int', default: 2000 }) waterGoal: number;
 
   // ─── Referral (screen 8) ──────────────────────────────────────────────────
   @Column({ unique: true, nullable: true }) referralCode: string;

@@ -16,6 +16,7 @@ export class Dietitian extends BaseEntity {
   @Column({ nullable: true }) occupation: string;
   @Column({ type: 'text', nullable: true }) bio: string;
   @Column({ type: 'text', array: true, nullable: true, default: [] }) services: string[];
+  @Column({ type: 'text', array: true, nullable: true, default: [] }) specialties: string[];
   @Column({ type: 'jsonb', nullable: true }) socialLinks: Record<string, string>;
   @Column({ type: 'text', array: true, nullable: true, default: [] }) certificates: string[];
   // { initial30: number, followUp60: number, extended90: number }
