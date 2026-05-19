@@ -31,6 +31,11 @@ export class OtpService {
     return true;
   }
 
+  async peek(email: string, type: 'verify' | 'reset', otp: string): Promise<boolean> {
+    const stored = await this.cache.get<string>(this.otpKey(email, type));
+    return !!stored && stored === otp;
+  }
+
   async canResend(email: string, type: 'verify' | 'reset'): Promise<boolean> {
     const cooldown = await this.cache.get(this.cooldownKey(email, type));
     return !cooldown;

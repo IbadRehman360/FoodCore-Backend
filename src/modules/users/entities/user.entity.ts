@@ -28,6 +28,10 @@ export class User extends BaseEntity {
   @Column({ default: false }) isMfaEnabled: boolean;
   @Column({ nullable: true, select: false }) mfaSecret: string;
 
+  // ─── Lockout ─────────────────────────────────────────────────────────────
+  @Column({ default: 0 }) failedLoginAttempts: number;
+  @Column({ type: 'timestamp', nullable: true }) lockedUntil: Date;
+
   // ─── Profile setup (screen 6) ─────────────────────────────────────────────
   @Column({ nullable: true }) profilePhoto: string;
   @Column({ nullable: true }) country: string;

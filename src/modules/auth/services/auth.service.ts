@@ -18,6 +18,9 @@ import { comparePassword, hashPassword } from '@common/utils';
 import { ERROR_MESSAGES } from '@common/constants';
 import { AccountStatus } from '@common/enums';
 
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_MINUTES = 15;
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -97,12 +100,30 @@ export class AuthService {
     const user = await this.usersService.findByEmail(dto.email);
     if (!user) throw new UnauthorizedException(ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS);
 
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
+      const remaining = Math.ceil((user.lockedUntil.getTime() - Date.now()) / 60000);
+      throw new UnauthorizedException(
+        ERROR_MESSAGES.AUTH.ACCOUNT_LOCKED.replace('{minutes}', String(remaining)),
+      );
+    }
+
     if (!user.password) {
       throw new UnauthorizedException('This account uses social login. Please sign in with Google or Apple.');
     }
 
     const valid = await comparePassword(dto.password, user.password);
-    if (!valid) throw new UnauthorizedException(ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS);
+    if (!valid) {
+      const attempts = (user.failedLoginAttempts ?? 0) + 1;
+      const lockedUntil =
+        attempts >= MAX_LOGIN_ATTEMPTS ? new Date(Date.now() + LOCKOUT_MINUTES * 60_000) : null;
+      await this.usersService.registerFailedLogin(user.id, attempts, lockedUntil);
+      if (lockedUntil) {
+        throw new UnauthorizedException(
+          ERROR_MESSAGES.AUTH.ACCOUNT_LOCKED.replace('{minutes}', String(LOCKOUT_MINUTES)),
+        );
+      }
+      throw new UnauthorizedException(ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS);
+    }
 
     if (user.status === AccountStatus.PENDING) {
       throw new UnauthorizedException(ERROR_MESSAGES.AUTH.ACCOUNT_NOT_VERIFIED);
@@ -112,11 +133,25 @@ export class AuthService {
       throw new UnauthorizedException(ERROR_MESSAGES.AUTH.ACCOUNT_SUSPENDED);
     }
 
+    if ((user.failedLoginAttempts ?? 0) > 0 || user.lockedUntil) {
+      await this.usersService.clearLockout(user.id);
+    }
+
     const expiresIn = dto.rememberMe
       ? '30d'
       : this.config.get<string>('jwt.expiresIn');
 
     return this.generateTokenPair(user.id, user.email, user.role, expiresIn);
+  }
+
+  async verifyResetOtp(dto: VerifyOtpDto) {
+    const user = await this.usersService.findByEmail(dto.email);
+    if (!user) throw new BadRequestException(ERROR_MESSAGES.AUTH.INVALID_OTP);
+
+    const valid = await this.otpService.peek(dto.email, 'reset', dto.otp);
+    if (!valid) throw new BadRequestException(ERROR_MESSAGES.AUTH.INVALID_OTP);
+
+    return { message: 'OTP verified. You may now reset your password.' };
   }
 
   async forgotPassword(email: string) {
@@ -145,6 +180,7 @@ export class AuthService {
 
     const hashed = await hashPassword(dto.newPassword);
     await this.usersService.updatePassword(user.id, hashed);
+    await this.usersService.clearLockout(user.id);
 
     return { message: 'Password reset successful. Please log in.' };
   }

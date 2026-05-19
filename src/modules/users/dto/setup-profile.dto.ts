@@ -1,7 +1,17 @@
-import { IsArray, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsDateString, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class SetupProfileDto {
+  @ApiPropertyOptional({ example: 'John Doe' })
+  @IsOptional()
+  @IsString()
+  fullName?: string;
+
+  @ApiPropertyOptional({ example: '1995-06-15' })
+  @IsOptional()
+  @IsDateString()
+  dateOfBirth?: string;
+
   @ApiPropertyOptional({ example: 'United States' })
   @IsOptional()
   @IsString()

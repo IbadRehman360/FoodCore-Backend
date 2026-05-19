@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from '../repositories/users.repository';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { SetupProfileDto } from '../dto/setup-profile.dto';
 import { HealthProfileDto } from '../dto/health-profile.dto';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 import { AccountStatus, Role } from '@common/enums';
-import { paginate, paginationOffset } from '@common/utils';
+import { hashPassword, comparePassword, paginate, paginationOffset } from '@common/utils';
 import { PaginationDto } from '@common/dto';
 import { ERROR_MESSAGES } from '@common/constants';
 import { ConfigService } from '@nestjs/config';
@@ -51,6 +52,14 @@ export class UsersService {
     return this.usersRepo.update(id, { otp, otpExpiry });
   }
 
+  registerFailedLogin(id: string, attempts: number, lockedUntil: Date | null) {
+    return this.usersRepo.update(id, { failedLoginAttempts: attempts, lockedUntil });
+  }
+
+  clearLockout(id: string) {
+    return this.usersRepo.update(id, { failedLoginAttempts: 0, lockedUntil: null });
+  }
+
   updatePassword(id: string, password: string) {
     return this.usersRepo.update(id, { password, otp: null, otpExpiry: null });
   }
@@ -73,12 +82,32 @@ export class UsersService {
   }
 
   async setupProfile(id: string, dto: SetupProfileDto) {
-    await this.usersRepo.update(id, { ...dto, isProfileComplete: true });
+    const { dateOfBirth, ...rest } = dto;
+    await this.usersRepo.update(id, {
+      ...rest,
+      ...(dateOfBirth && { dateOfBirth: new Date(dateOfBirth) }),
+      isProfileComplete: true,
+    });
     return this.usersRepo.findById(id);
   }
 
   async updateHealthProfile(id: string, dto: HealthProfileDto) {
     await this.usersRepo.update(id, { ...dto, isHealthProfileComplete: true });
+    return this.usersRepo.findById(id);
+  }
+
+  async changePassword(id: string, dto: ChangePasswordDto) {
+    const user = await this.usersRepo.findByIdWithPassword(id);
+    if (!user) throw new NotFoundException(ERROR_MESSAGES.USER.NOT_FOUND);
+    const isValid = await comparePassword(dto.currentPassword, user.password ?? '');
+    if (!isValid) throw new BadRequestException('Current password is incorrect');
+    const hashed = await hashPassword(dto.newPassword);
+    await this.usersRepo.update(id, { password: hashed });
+    return { message: 'Password changed successfully' };
+  }
+
+  async updateProfilePhoto(id: string, photoUrl: string) {
+    await this.usersRepo.update(id, { profilePhoto: photoUrl });
     return this.usersRepo.findById(id);
   }
 

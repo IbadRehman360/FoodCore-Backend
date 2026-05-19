@@ -1,7 +1,7 @@
 {
   "name": "foodcure-backend",
   "version": "1.0.0",
-  "description": "FoodCure backend API — NestJS, PostgreSQL, MongoDB, Redis",
+  "description": "FoodCure backend API — NestJS, PostgreSQL, Redis",
   "author": "Sandstech",
   "private": true,
   "license": "UNLICENSED",

@@ -31,6 +31,14 @@ export class UsersRepository {
       .getOne();
   }
 
+  findByIdWithPassword(id: string) {
+    return this.repo
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.id = :id', { id })
+      .getOne();
+  }
+
   create(data: Partial<User>) {
     const user = this.repo.create(data);
     return this.repo.save(user);

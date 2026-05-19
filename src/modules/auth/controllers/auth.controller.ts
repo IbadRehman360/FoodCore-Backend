@@ -12,7 +12,7 @@ import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { ResendOtpDto } from '../dto/resend-otp.dto';
 import { Public, CurrentUser } from '@common/decorators';
 
-@ApiTags('Auth')
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -69,6 +69,17 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
   refresh(@Body() dto: RefreshTokenDto) {
     return this.authService.refreshTokens(dto.refreshToken);
+  }
+
+  @Public()
+  @Post('verify-reset-otp')
+  @Throttle({ default: { ttl: 60000, limit: 10 } })
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Validate password-reset OTP without consuming it' })
+  @ApiResponse({ status: 200, description: 'OTP valid; proceed to reset-password screen' })
+  @ApiResponse({ status: 400, description: 'Invalid or expired OTP' })
+  verifyResetOtp(@Body() dto: VerifyOtpDto) {
+    return this.authService.verifyResetOtp(dto);
   }
 
   @Public()

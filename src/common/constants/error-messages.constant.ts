@@ -7,6 +7,7 @@ export const ERROR_MESSAGES = {
     UNAUTHORIZED: 'You are not authorized to access this resource.',
     MFA_REQUIRED: 'Multi-factor authentication is required.',
     INVALID_OTP: 'Invalid or expired OTP.',
+    ACCOUNT_LOCKED: 'Too many failed login attempts. Try again in {minutes} minute(s).',
   },
   USER: {
     NOT_FOUND: 'User not found.',
