@@ -24,6 +24,27 @@ export class DietitiansRepository {
     return this.repo.findAndCount({ where: { verificationStatus: status }, skip, take, relations: ['user'] });
   }
 
+  searchApproved(opts: { skip: number; take: number; search?: string; specialty?: string; location?: string; minRating?: number }) {
+    const qb = this.repo.createQueryBuilder('d')
+      .leftJoinAndSelect('d.user', 'user')
+      .where('d.verificationStatus = :status', { status: VerificationStatus.VERIFIED });
+
+    if (opts.search) {
+      qb.andWhere('LOWER(user.fullName) LIKE :search', { search: `%${opts.search.toLowerCase()}%` });
+    }
+    if (opts.specialty) {
+      qb.andWhere(':specialty = ANY(d.specialties)', { specialty: opts.specialty });
+    }
+    if (opts.location) {
+      qb.andWhere('(LOWER(user.city) LIKE :loc OR LOWER(user.state) LIKE :loc OR LOWER(user.country) LIKE :loc)', { loc: `%${opts.location.toLowerCase()}%` });
+    }
+    if (opts.minRating !== undefined) {
+      qb.andWhere('d.rating >= :minRating', { minRating: opts.minRating });
+    }
+
+    return qb.skip(opts.skip).take(opts.take).orderBy('d.rating', 'DESC').getManyAndCount();
+  }
+
   create(data: Partial<Dietitian>) {
     return this.repo.save(this.repo.create(data));
   }

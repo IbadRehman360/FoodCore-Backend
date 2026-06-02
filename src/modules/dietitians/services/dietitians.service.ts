@@ -86,10 +86,10 @@ export class DietitiansService {
     return paginate(data, total, page, limit);
   }
 
-  async findApproved(pagination: PaginationDto) {
+  async findApproved(pagination: PaginationDto, filters?: { search?: string; specialty?: string; location?: string; minRating?: number }) {
     const { page, limit } = pagination;
     const { skip, take } = paginationOffset(page, limit);
-    const [data, total] = await this.dietitiansRepo.findByStatus(VerificationStatus.VERIFIED, skip, take);
+    const [data, total] = await this.dietitiansRepo.searchApproved({ skip, take, ...filters });
     return paginate(data, total, page, limit);
   }
 

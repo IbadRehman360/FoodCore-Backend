@@ -19,10 +19,21 @@ export class DietitiansController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Browse approved dietitians — public' })
+  @ApiOperation({ summary: 'Browse approved dietitians — optional ?search, ?specialty, ?location, ?minRating' })
   @ApiResponse({ status: 200, description: 'Paginated list of verified dietitians' })
-  findAll(@Query() pagination: PaginationDto) {
-    return this.dietitiansService.findApproved(pagination);
+  findAll(
+    @Query() pagination: PaginationDto,
+    @Query('search') search?: string,
+    @Query('specialty') specialty?: string,
+    @Query('location') location?: string,
+    @Query('minRating') minRating?: string,
+  ) {
+    return this.dietitiansService.findApproved(pagination, {
+      search,
+      specialty,
+      location,
+      minRating: minRating ? parseFloat(minRating) : undefined,
+    });
   }
 
   @Get(':id')
