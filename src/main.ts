@@ -13,8 +13,9 @@ import { JwtAuthGuard, RolesGuard } from '@common/guards';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });
   const config = app.get(ConfigService);
+  const uploadsDir = config.get<string>('UPLOADS_DIR') || join(process.cwd(), 'uploads');
+  app.useStaticAssets(uploadsDir, { prefix: '/uploads' });
   const reflector = app.get(Reflector);
 
   app.setGlobalPrefix(config.get('app.apiPrefix'));

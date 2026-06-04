@@ -29,6 +29,8 @@ import { SocialModule } from '@modules/social/social.module';
 import { CopyrightModule } from '@modules/copyright/copyright.module';
 import { WearablesModule } from '@modules/wearables/wearables.module';
 import { ReviewsModule } from '@modules/reviews/reviews.module';
+import { CommunitiesModule } from '@modules/communities/communities.module';
+import { PodcastsModule } from '@modules/podcasts/podcasts.module';
 
 @Module({
   providers: [
@@ -87,6 +89,8 @@ import { ReviewsModule } from '@modules/reviews/reviews.module';
     CopyrightModule,
     WearablesModule,
     ReviewsModule,
+    CommunitiesModule,
+    PodcastsModule,
   ],
 })
 export class AppModule {}

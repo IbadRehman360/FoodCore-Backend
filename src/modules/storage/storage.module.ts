@@ -13,7 +13,7 @@ import { S3StorageService } from './s3-storage.service';
       useFactory: (config: ConfigService) => {
         const provider = config.get<string>('STORAGE_PROVIDER', 'local');
         if (provider === 's3') return new S3StorageService(config);
-        return new LocalStorageService();
+        return new LocalStorageService(config);
       },
     },
   ],

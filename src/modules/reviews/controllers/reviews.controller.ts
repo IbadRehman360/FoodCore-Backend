@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReviewsService } from '../services/reviews.service';
 import { CreateReviewDto } from '../dto/create-review.dto';
-import { ReviewTargetType } from '../entities/review.entity';
+import { ListReviewsDto } from '../dto/list-reviews.dto';
 import { CurrentUser } from '@common/decorators';
 import { PaginationDto } from '@common/dto';
 
@@ -20,13 +20,12 @@ export class ReviewsController {
 
   @Get('target/:targetId')
   @ApiOperation({ summary: 'List reviews for a target (dietitian or recipe)' })
-  @ApiQuery({ name: 'targetType', enum: ReviewTargetType })
   listByTarget(
     @Param('targetId') targetId: string,
-    @Query('targetType') targetType: ReviewTargetType,
-    @Query() pagination: PaginationDto,
+    @Query() query: ListReviewsDto,
   ) {
-    return this.reviewsService.listByTarget(targetId, targetType, pagination);
+    const { targetType, ...pagination } = query;
+    return this.reviewsService.listByTarget(targetId, targetType, pagination as any);
   }
 
   @Get('mine')
