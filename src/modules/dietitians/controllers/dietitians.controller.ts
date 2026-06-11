@@ -36,6 +36,12 @@ export class DietitiansController {
     });
   }
 
+  @Get('by-user/:userId')
+  @ApiOperation({ summary: 'Get dietitian public profile by their user id' })
+  findByUser(@Param('userId') userId: string) {
+    return this.dietitiansService.findOrFailByUserId(userId);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get dietitian public profile by ID' })
   @ApiResponse({ status: 200, description: 'Dietitian profile' })

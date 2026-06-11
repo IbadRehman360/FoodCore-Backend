@@ -116,6 +116,34 @@ export class UsersService {
     return this.usersRepo.findById(id);
   }
 
+  // ─── GDPR ──────────────────────────────────────────────────────────────────
+
+  /** Right to data portability — returns the user's stored personal data. */
+  async exportData(id: string) {
+    return this.findOrFail(id);
+  }
+
+  /**
+   * Right to erasure — anonymizes PII (so the email/username can be reused) and
+   * soft-deletes the account so it can no longer be found or logged into.
+   */
+  async deleteAccount(id: string) {
+    await this.findOrFail(id);
+    await this.usersRepo.update(id, {
+      email: `deleted_${id}@deleted.local`,
+      username: null,
+      fullName: 'Deleted User',
+      phone: null,
+      profilePhoto: null,
+      about: null,
+      healthGoals: null,
+      mealPersonalization: null,
+      refreshToken: null,
+    });
+    await this.usersRepo.softDelete(id);
+    return { message: 'Account deleted successfully.' };
+  }
+
   async getReferral(id: string) {
     const user = await this.findOrFail(id);
     const appUrl = this.config.get<string>('app.frontendUrl');

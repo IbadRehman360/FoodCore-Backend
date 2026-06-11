@@ -1,5 +1,5 @@
 import {
-  Body, Controller, Get, HttpCode, HttpStatus, Inject, Patch, Post,
+  Body, Controller, Delete, Get, HttpCode, HttpStatus, Inject, Patch, Post,
   UploadedFile, UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -56,6 +56,21 @@ export class UserProfileController {
   @ApiResponse({ status: 400, description: 'Current password is incorrect' })
   changePassword(@CurrentUser('id') userId: string, @Body() dto: ChangePasswordDto) {
     return this.usersService.changePassword(userId, dto);
+  }
+
+  @Get('me/export')
+  @ApiOperation({ summary: 'Export my personal data (GDPR data portability)' })
+  @ApiResponse({ status: 200, description: 'All personal data for the current user' })
+  exportData(@CurrentUser('id') userId: string) {
+    return this.usersService.exportData(userId);
+  }
+
+  @Delete('me')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete my account (GDPR right to erasure)' })
+  @ApiResponse({ status: 200, description: 'Account deleted' })
+  deleteAccount(@CurrentUser('id') userId: string) {
+    return this.usersService.deleteAccount(userId);
   }
 
   @Post('me/photo')

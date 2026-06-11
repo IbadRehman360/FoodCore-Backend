@@ -52,6 +52,10 @@ export class UsersRepository {
     return this.repo.update(id, data);
   }
 
+  softDelete(id: string) {
+    return this.repo.softDelete(id);
+  }
+
   findAll(skip: number, take: number) {
     return this.repo.findAndCount({ skip, take, order: { createdAt: 'DESC' } });
   }

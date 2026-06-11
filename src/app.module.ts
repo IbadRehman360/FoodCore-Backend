@@ -31,6 +31,9 @@ import { WearablesModule } from '@modules/wearables/wearables.module';
 import { ReviewsModule } from '@modules/reviews/reviews.module';
 import { CommunitiesModule } from '@modules/communities/communities.module';
 import { PodcastsModule } from '@modules/podcasts/podcasts.module';
+import { MessagesModule } from '@modules/messages/messages.module';
+import { FeedbackModule } from '@modules/feedback/feedback.module';
+import { InventoryModule } from '@modules/inventory/inventory.module';
 
 @Module({
   providers: [
@@ -91,6 +94,9 @@ import { PodcastsModule } from '@modules/podcasts/podcasts.module';
     ReviewsModule,
     CommunitiesModule,
     PodcastsModule,
+    MessagesModule,
+    FeedbackModule,
+    InventoryModule,
   ],
 })
 export class AppModule {}

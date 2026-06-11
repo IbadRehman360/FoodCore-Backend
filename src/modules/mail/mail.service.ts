@@ -43,6 +43,27 @@ export class MailService {
     }
   }
 
+  async sendFeedbackEmail(subject: string, message: string, fromEmail: string): Promise<void> {
+    try {
+      const to = this.config.get<string>('mail.fromEmail') ?? this.config.get<string>('mail.gmailUser');
+      await this.transporter.sendMail({
+        from: `"${this.config.get('mail.fromName')}" <${this.config.get('mail.fromEmail')}>`,
+        to,
+        subject: `[FoodCure Feedback] ${subject}`,
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;padding:24px">
+            <h3 style="color:#2d2d2d">New feedback received</h3>
+            <p style="color:#555"><strong>From:</strong> ${fromEmail}</p>
+            <p style="color:#555"><strong>Subject:</strong> ${subject}</p>
+            <div style="background:#f5f5f5;border-radius:8px;padding:16px;color:#333;white-space:pre-wrap">${message}</div>
+          </div>
+        `,
+      });
+    } catch (err) {
+      this.logger.error('Failed to send feedback email', err);
+    }
+  }
+
   private otpTemplate(otp: string, expiryMinutes: number): string {
     return `
       <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px;background:#f9f9f9;border-radius:12px">

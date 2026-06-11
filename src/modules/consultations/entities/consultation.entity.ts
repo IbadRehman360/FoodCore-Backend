@@ -12,4 +12,10 @@ export class Consultation extends BaseEntity {
   @Column({ type: 'int', nullable: true }) duration: number;
   @Column({ nullable: true }) notes: string;
   @Column({ nullable: true }) meetingUrl: string;
+
+  // 'initial' | 'follow_up' | 'extended' — the session tier shown in the UI.
+  @Column({ nullable: true }) plan: string;
+  @Column({ type: 'float', nullable: true }) fee: number;
+  @Column({ nullable: true }) sessionFor: string;
+  @Column({ nullable: true }) cancellationReason: string;
 }
